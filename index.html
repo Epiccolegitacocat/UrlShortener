@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TinyURL Shortener</title>
+</head>
+<body>
+  <input id="url-input" type="text" placeholder="Enter URL" autofocus>
+  <div id="output"></div>
+  <script>
+    const urlInput = document.getElementById('url-input');
+    const outputDiv = document.getElementById('output');
+
+    urlInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const url = urlInput.value.trim();
+        if (url !== '') {
+          fetch(`http://tinyurl.com/api-create.php?url=${encodeURIComponent(url)}`)
+            .then((response) => response.text())
+            .then((shortenedUrl) => {
+              outputDiv.innerHTML = `<span id="shortened-url">${shortenedUrl}</span>`;
+            })
+            .catch((error) => {
+              outputDiv.innerHTML = `Error: ${error.message}`;
+            });
+          urlInput.value = '';
+        }
+      }
+    });
+
+    document.getElementById('output').addEventListener('click', (e) => {
+      if (e.target.tagName === 'SPAN') {
+        navigator.clipboard.writeText(e.target.textContent);
+      }
+    });
+  </script>
+</body>
+</html>
